@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>EMPLOYEE MONITORING SYSTEM</title>
+	<script src="com.js"></script>
+	<script src="emp.js"></script>
+	<script>
+    var empdata = new EmpRepository();
+
+		function hideAll(){
+		var divs=document.getElementsByTagName("div");
+		for(var i=0;i<divs.length;i++){
+            divs[i].style.display='none';
+		}
+	}
+
+	function displaytable(){
+		hideAll();
+		$("divtable").style.display="inline-block";
+		for(var i=0;i<empdata.data.length;i++){
+			var emp=empdata.data[i];
+			var tr='<tr><td>'+emp.empid+'</td><td>';
+			tr+=emp.empname+'</td><td>';
+			tr+=emp.empaddress+'</td><td>';
+			tr+='<a href="#" class="edit" recid="' + emp.empid + '">EDIT</a></td></tr>';
+			$("tblrecords").innerHTML += tr;
+		}
+		var allanchors=document.getElementsByClassName("edit");
+		editclick(allanchors,function(){
+		var selectedid=this.getAttribute("recid");
+		var selectedemp = empdata.find(selectedid);
+		$("divold").style.display="inline-block";
+		$("txtoldid").value=selectedemp.empid;
+		$("txtoldname").value=selectedemp.empname;
+		$("txtoldaddress").value=selectedemp.empaddress;
+
+		});
+    }
+
+    function addRecord(){
+			
+			var id = parseInt($("txtid").value);
+			var name = $("txtname").value;
+			var address = $("txtaddress").value;
+			var emp = new employee(id, name, address);
+			//create the employee object
+			//call the addEmployee function of the repository class..
+			empdata.addEmployee(emp);
+			displaytable();
+		}
+
+		function updaterecord(){
+			var id = parseInt($("txtoldid").value);
+			var name = $("txtoldname").value;
+			var address = $("txtoldaddress").value;
+			var emp = new employee(id, name, address);
+
+			empdata.update(emp,id);
+			displaytable();
+		}
+
+		function init(){
+			hideAll();
+			click('atable', ()=>{ 
+				hideAll();
+				$("divtable").style.display ="inline-block";
+			});		
+			click('anew', ()=>{ hideAll();
+				$("divAdd").style.display ="inline-block"; });			
+			click('aabout', ()=>{ alert("CDAC MeanStack Training")});
+		}
+		window.addEventListener("load", function(){
+			init();
+			click("btnregister", addRecord)	
+			click("btnupdate", updaterecord)		
+		})	
+		// window.addEventListener("load", function(){
+		// 	init();
+		// 	click("btnupdate", updaterecord)			
+		// })	
+
+		
+	</script>
+	<style>
+		*{
+			background-color: silver;
+			color: grey;
+			padding: 5px;
+			margin: 5px;
+		}
+		div{
+			display: inline-block;
+			width: 45%
+			vertical-align:top;
+		}
+		h1,p{
+			background-color: #404040;
+			padding: 10px;
+			text-align: center;
+		}
+	</style>
+</head>
+<body>
+<h1>EMPLOYEE MONITORING SYSTEM</h1>
+<p>
+	<a id="atable" href="#">show all records</a>
+	<a id="anew" href="#">add new record</a>
+	<a id="aabout" href="#">about us</a>
+</p>
+<div id="divtable">
+	<h1>table of records</h1>
+	<table id="tblrecords" border="1">
+	<tr>
+		<th>employee Id</th>
+		<th>employee Name</th>
+		<th>employee Address</th>
+		<th>options</th>
+    </tr>
+	</table>
+</div>
+<div id="divAdd">
+	<h1>register new employee</h1>
+	<p><input type="number" id="txtid" placeholder="enter id"></p>
+	<p><input type="text" id="txtname" placeholder="enter Name"></p>
+	<p><input type="text" id="txtaddress" placeholder="enter Address"></p>
+	<button id="btnregister">Register</button>
+</div>
+<div id="divold">
+	<h1>register new employee</h1>
+	<p><input type="number" id="txtoldid" placeholder="enter id"></p>
+	<p><input type="text" id="txtoldname" placeholder="enter Name"></p>
+	<p><input type="text" id="txtoldaddress" placeholder="enter Address"></p>
+	<button id="btnupdate">update</button>
+</div>
+</body>
+</html>
